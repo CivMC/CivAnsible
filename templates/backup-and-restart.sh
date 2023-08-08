@@ -1,10 +1,9 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 echo "$(date) Stopping services for backup..."
-docker service scale minecraft_waterfall=0
-sleep 1m
-docker service scale minecraft_paper=0
-sleep 10m
+docker service scale minecraft_waterfall=0 &
+docker service scale minecraft_paper=0 &
+wait
 
 echo "$(date) Starting backup..."
 export AWS_ACCESS_KEY_ID={{secret.backup.s3_access_key_id}}
@@ -21,9 +20,9 @@ restic \
   --exclude '**plugins'
 
 echo "$(date) Starting services after backup..."
-docker service scale minecraft_paper=1
-sleep 5m
-docker service scale minecraft_waterfall=1
+docker service scale minecraft_paper=1 &
+docker service scale minecraft_waterfall=1 &
+wait
 
 echo "$(date) Copying backup to longterm..."
 restic \
