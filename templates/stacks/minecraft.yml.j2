@@ -99,7 +99,7 @@ services:
           loki-batch-size: "400"
 
   kira:
-    image: ghcr.io/civmc/kira:2.1.1
+    image: ghcr.io/civmc/kira:master
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -107,6 +107,7 @@ services:
       - minecraft_default
     volumes:
       - /opt/PrivateConfig/kira/{{setting.environment}}-config.json:/app/config.json
+      - /opt/PrivateConfig/kira/{{setting.environment}}-config.yaml:/app/config.yaml
     deploy:
       placement:
         constraints: [node.role == manager]
